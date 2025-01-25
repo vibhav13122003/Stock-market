@@ -1,40 +1,24 @@
+import { useState } from 'react'
 
 import './App.css'
-import { useDispatch, useSelector } from "react-redux";
-import { isSignin } from "./Store/Action/user";
-import { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AdminDashBoard from './components/AdminDashBoard'
+import SubmissionForm from "./components/SubmissionForm";
+import "@mantine/core/styles.css";
+
+import { MantineProvider } from "@mantine/core";
+
 function App() {
-
-const login = useSelector((state) => state.user.login);
-const user = useSelector((state) => state.user.user);
- const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(isSignin());
-  }, [dispatch]);
+  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <BrowserRouter className='container'>
+    <MantineProvider>
     
-       
-        
-          {login ? (
-            <>
-                  <Route path='/dashboard' element={<Dashboard />} exact />
-                  <Route path='/' element={<Navigate to='/dashboard' />} />
-                </>
-              )}
-            </>
-          ) : (
-            <Route path='/' element={<AuthenticationPage />} exact />
-          )}
-      
-        {login && user.role === "client" && <Footer />}
-      </BrowserRouter>
-    </>
-  );
+       <AdminDashBoard />
+        <SubmissionForm />
+  
+     
+    </MantineProvider>
+  )
 }
 
 export default App

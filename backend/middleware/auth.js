@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
-const {User} = "../models/User.js";
-const isAuthenticated = async (req, res, next) => {
+
+import jwt from 'jsonwebtoken'
+import { User } from '../model/user.js'
+export const isAuthenticated = async (req, res, next) => {
     try {
         const token = req.cookies.clientToken;
         console.log(token);
@@ -23,5 +24,3 @@ const isAuthenticated = async (req, res, next) => {
         res.status(500).send("Server Error");
     }
 };
-
-module.exports = isAuthenticated;

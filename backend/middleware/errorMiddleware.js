@@ -5,7 +5,7 @@ class ErrorHandler extends Error {
         Error.captureStackTrace(this, this.constructor);
     }
 }
- const errorMiddleware = (err, req, res, next) => {
+export const errorMiddleware = (err, req, res, next) => {
     err.message = err.message || "Internal server Error";
     err.statusCode = err.statusCode || 500;
 
@@ -37,4 +37,4 @@ class ErrorHandler extends Error {
     })
 }
 
-module.exports = { ErrorHandler, errorMiddleware };
+export default ErrorHandler;

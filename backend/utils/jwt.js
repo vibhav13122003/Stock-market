@@ -1,8 +1,8 @@
- const generateToken = (user, message, statusCode, res) => {
+export const generateToken = (user, message, statusCode, res) => {
     const token = user.generateJsonWebToken();
-    const cookieName = "user";
+    const cookieName = 'cookie'
 
-    const expiresIn = process.env.COOKIE_EXPIRE || '7d';
+    const expiresIn ='7d';
 
     res.status(statusCode).cookie(cookieName, token, {
         expires: new Date(Date.now() + parseDurationToMilliseconds(expiresIn)),
@@ -37,5 +37,3 @@ const parseDurationToMilliseconds = (duration) => {
 
     return milliseconds;
 };
-
-module.exports = { generateToken, parseDurationToMilliseconds };
