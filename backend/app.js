@@ -1,56 +1,31 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import userRouter from './routes/user.js';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import { errorMiddleware } from './middleware/errorMiddleware.js';
-import cloudinary from 'cloudinary';
-
-dotenv.config({ path: './config/.env' });
-
+const express = require('express');
+const cors = require('cors'); // Import CORS
 const app = express();
-
-// Cloudinary configuration
-cloudinary.v2.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Database connection
-const dbConnection = async () => {
-    try {
-        const mongoUrl = process.env.MONGO_URL;
-        if (!mongoUrl) {
-            throw new Error('MONGO_URL is not defined');
-        }
-
-        await mongoose.connect(mongoUrl);
-        console.log('Database connected');
-    } catch (error) {
-        console.error('Error connecting to database:', error);
-    }
-};
-
-dbConnection();
-app.use(express.urlencoded({ limit: '100mb', extended: true })); // Set URL-encoded payload limit
+const connectDB = require('./utils/db');
+const mongoose = require('mongoose');
+const path = require('path');
+const port = process.env.PORT || 3000;
+const userRouter = require('./router/userRouter');
+const transactionRouter = require('./router/transaction');
+const portfolioRoutes = require('./router/portfolio');
+require('dotenv').config();
 
 
-app.use(cookieParser());
-app.use(express.json({ limit: '100mb' })); // Set JSON payload limit
+// Use CORS
+app.use(cors({ origin: '*', credentials: true }));
 
-
-// CORS and middleware setup
-app.use(cors({
-    origin: '*',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-
+app.use(express.json());
 
 app.use('/user', userRouter);
+app.use('/api/transaction', transactionRouter);
+app.use('/api/portfolio', portfolioRoutes);
 
-// Global error handling middleware
-app.use(errorMiddleware);
-
-export default app;
+app.listen(port, async () => {
+    try {
+        await connectDB(); // Connect to the database
+        console.log(`Server is running on port ${port}`);
+    } catch (error) {
+        console.error(error.stack);
+        process.exit(1);
+    }
+});

@@ -2,11 +2,12 @@ const ErrorHandler = require('../middleware/errorMiddleware');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const generateToken = require('../utils/jwt');
+const {generateToken} = require('../utils/jwt');
 
 
 const registerUser = async (req, res, next) => {
     const { name, email, password, balance } = req.body;
+    console.log("Request Body:", req.body);
 
     if (!name || !email || !password || !balance) {
         return res.status(400).json({ error: 'Please fill in all required fields' });
@@ -35,11 +36,12 @@ const registerUser = async (req, res, next) => {
             balance,
         });
         console.log('User Created:', user);
-        generateToken(user, 'User registered successfully', 201, res);
-        return res.status(201).json({ message: 'User registered successfully' });
+
+        // Call generateToken and let it handle the response
+        return generateToken(user, 'User registered successfully', 201, res);
 
     } catch (error) {
-       next(error);
+        next(error);
     }
 };
 
@@ -65,6 +67,7 @@ const loginUser = async (req, res, next) => {
         return res.status(500).json({ error: 'Error logging in user' });
     }
 };
+
 
 
 module.exports = { registerUser, loginUser };
